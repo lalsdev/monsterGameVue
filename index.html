@@ -14,7 +14,8 @@
             <div class="small-6 columns">
                 <h1 class="text-center">YOU</h1>
                 <div class="healthbar">
-                    <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;">
+                    <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;"
+                        :style="{ width: scoreMe + '%'}">
                         {{ scoreMe }}
                     </div>
                 </div>
@@ -22,7 +23,8 @@
             <div class="small-6 columns">
                 <h1 class="text-center">MONSTER</h1>
                 <div class="healthbar">
-                    <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;">
+                    <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;"
+                        :style="{ width: scoreMonster + '%'}">
                         {{ scoreMonster }}
                     </div>
                 </div>
@@ -85,10 +87,18 @@
                     lost: randNumMonster
 
                 })
+                if (this.scoreMe <= 0) {
+                    alert('Monster won!')
+                    this.startNewGame()
+                } else if (this.scoreMonster <= 0) {
+                    alert('You won!')
+                    this.startNewGame()
+                } else {
+                    'do nothing'
+                }
             },
             specialAttack: function () {
                 this.showHistory = true
-                alert('Special Attack!')
                 const randNumMe = Math.floor(Math.random() * 40)
                 Math.floor(Math.random() * 6) + 1
                 const randNumMonster = Math.floor(Math.random() * 40)
@@ -103,8 +113,16 @@
                     buttonType: 'attack',
                     points: this.scoreMonster -= randNumMonster,
                     lost: randNumMonster
-
                 })
+                if (this.scoreMe <= 0) {
+                    alert('Monster won!')
+                    this.startNewGame()
+                } else if (this.scoreMonster <= 0) {
+                    alert('You won!')
+                    this.startNewGame()
+                } else {
+                    'do nothing'
+                }
             },
             heal: function () {
                 this.showHistory = true
@@ -131,6 +149,7 @@
                 this.showHistory = false
             },
         },
+
     })
 </script>
 
