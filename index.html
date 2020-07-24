@@ -30,22 +30,27 @@
         </section>
         <section class="row controls">
             <div class="small-12 columns">
-                <button @click="show = !show" id="start-game">START NEW GAME</button>
+                <button @click="startNewGame" id="start-game">START NEW GAME</button>
             </div>
         </section>
         <section v-if="!show" class="row controls">
             <div class="small-12 columns">
                 <button @click="attack" id="attack">ATTACK</button>
-                <button id="special-attack">SPECIAL ATTACK</button>
-                <button id="heal">HEAL</button>
-                <button id="give-up">GIVE UP</button>
+                <button @click="specialAttack" id="special-attack">SPECIAL ATTACK</button>
+                <button @click="heal" id="heal">HEAL</button>
+                <button @click="startNewGame" id="give-up">GIVE UP</button>
             </div>
         </section>
-        <section v-if="!show" class="row log">
+        <section v-if="showHistory" class="row log">
             <div class="small-12 columns">
                 <ul>
-                    <li v-for="score in scores" :class="score.type == 'me' ? 'player-turn' : 'monster-turn'">
+                    <li v-for="score in scores" :class="score.type == 'me' ? 'player-turn' : 'monster-turn'"
+                        v-if="score.buttonType == 'attack'">
                         {{ score.type == 'me' ? 'You have lost ' + score.lost : 'Monster has lost ' + score.lost }}
+                    </li>
+                    <li v-else="score.buttonType == 'heal'"
+                        :class="score.type == 'me' ? 'player-turn' : 'monster-turn'">
+                        {{ score.type == 'me' ? 'You healed with ' + score.won : 'Monster healed with ' + score.won }}
                     </li>
                 </ul>
             </div>
@@ -59,24 +64,71 @@
             scoreMe: 100,
             scoreMonster: 100,
             show: true,
+            showHistory: false,
             scores: [],
         },
         methods: {
             attack: function () {
+                this.showHistory = true
                 const randNumMe = Math.floor(Math.random() * 19)
                 const randNumMonster = Math.floor(Math.random() * 19)
                 this.scores.push({
                     type: 'me',
+                    buttonType: 'attack',
                     points: this.scoreMe -= randNumMe,
                     lost: randNumMe
                 })
                 this.scores.push({
                     type: 'monster',
+                    buttonType: 'attack',
                     points: this.scoreMonster -= randNumMonster,
                     lost: randNumMonster
 
                 })
-                console.log('scores', this.scores)
+            },
+            specialAttack: function () {
+                this.showHistory = true
+                alert('Special Attack!')
+                const randNumMe = Math.floor(Math.random() * 40)
+                Math.floor(Math.random() * 6) + 1
+                const randNumMonster = Math.floor(Math.random() * 40)
+                this.scores.push({
+                    type: 'me',
+                    buttonType: 'attack',
+                    points: this.scoreMe -= randNumMe,
+                    lost: randNumMe
+                })
+                this.scores.push({
+                    type: 'monster',
+                    buttonType: 'attack',
+                    points: this.scoreMonster -= randNumMonster,
+                    lost: randNumMonster
+
+                })
+            },
+            heal: function () {
+                this.showHistory = true
+                const randHealNumMe = Math.floor(Math.random() * 10)
+                const randHealNumMonster = Math.floor(Math.random() * 10)
+                this.scores.push({
+                    type: 'me',
+                    buttonType: 'heal',
+                    points: this.scoreMe += randHealNumMe,
+                    won: randHealNumMe
+                })
+                this.scores.push({
+                    type: 'monster',
+                    buttonType: 'heal',
+                    points: this.scoreMonster += randHealNumMonster,
+                    won: randHealNumMonster
+                })
+            },
+            startNewGame: function () {
+                this.scoreMe = 100
+                this.scoreMonster = 100
+                this.show = !this.show
+                this.scores = []
+                this.showHistory = false
             },
         },
     })
